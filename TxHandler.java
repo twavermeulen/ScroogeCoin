@@ -31,7 +31,6 @@ public class TxHandler {
 
 		for (Transaction.Input input : tx.getInputs()) {
 			UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
-			totalInput += UTXOPool.getTxOutput(utxo).value;
 
 			// (1)
 			if (!UTXOPool.contains(utxo)) {
@@ -41,6 +40,8 @@ public class TxHandler {
 			if (claimedUTXO.contains(utxo)) {
 				return false;
 			}
+
+			totalInput += UTXOPool.getTxOutput(utxo).value;
 			claimedUTXO.add(utxo);
 
 			// (2)
@@ -51,13 +52,13 @@ public class TxHandler {
 		}
 
 		for (Transaction.Output output : tx.getOutputs()) {
-			totalOutput += output.value;
 
 			// (4)
 			if (output.value < 0) {
 				return false;
 			}
 
+			totalOutput += output.value;
 		}
 
 		// (5)
